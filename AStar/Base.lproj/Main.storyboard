@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="XgQ-ft-vYg">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Grid View Controller-->
+        <scene sceneID="jwT-5R-t1h">
+            <objects>
+                <viewController id="XgQ-ft-vYg" customClass="GridViewController" customModule="AStar" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="JT4-7f-U3w"/>
+                        <viewControllerLayoutGuide type="bottom" id="nKG-wN-iJ7"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="df1-tI-Kvv">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L69-BS-Oc2" customClass="GridView" customModule="AStar" customModuleProvider="target">
+                                <rect key="frame" x="16" y="162" width="343" height="343"/>
+                                <color key="backgroundColor" red="0.27162052980000001" green="0.55662470919999996" blue="0.77076251269999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="L69-BS-Oc2" secondAttribute="height" multiplier="1:1" id="sCY-0E-OpU"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="L69-BS-Oc2" firstAttribute="trailing" secondItem="df1-tI-Kvv" secondAttribute="trailingMargin" id="b7k-7z-6Kw"/>
+                            <constraint firstItem="L69-BS-Oc2" firstAttribute="centerY" secondItem="df1-tI-Kvv" secondAttribute="centerY" id="c0h-6g-taU"/>
+                            <constraint firstItem="L69-BS-Oc2" firstAttribute="leading" secondItem="df1-tI-Kvv" secondAttribute="leadingMargin" id="q6c-bU-fqR"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="gridView" destination="L69-BS-Oc2" id="gV0-Da-vIP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QyR-P7-eEM" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="44" y="142"/>
+        </scene>
+    </scenes>
+</document>
