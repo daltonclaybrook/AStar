@@ -11,6 +11,13 @@ import UIKit
 class GridViewController: UIViewController {
     
     @IBOutlet var gridView: GridView!
+    let grid = Grid(width: 10, height: 10)
+    var startNode: Node {
+        return grid.node(atX: 0, y: 0)!
+    }
+    var goalNode: Node {
+        return grid.node(atX: grid.width-1, y: grid.height-1)!
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,13 +29,25 @@ class GridViewController: UIViewController {
     @IBAction func gridViewTapGestureRecognized(_ sender: UITapGestureRecognizer) {
         let location = sender.location(in: gridView)
         let nodeLocation = gridView.tileLocationOfTap(at: location)
-        gridView.colorTileView(.lightGray, atX: nodeLocation.x, y: nodeLocation.y)
+        guard let node = grid.node(atX: nodeLocation.x, y: nodeLocation.y) else { return }
+        
+        node.isBlocked = !node.isBlocked
+        let color: UIColor = node.isBlocked ? .lightGray : .white
+        gridView.colorTileView(color, atX: node.x, y: node.y)
+    }
+    
+    @IBAction func findPathButtonPressed(_ sender: Any) {
+        guard let pathNodes = Path.findPath(from: startNode, to: goalNode) else { return }
+        gridView.drawPath(withNodes: pathNodes)
     }
     
     //MARK: Private
     
     private func configureGrid() {
-        gridView.colorTileView(.green, atX: 0, y: 0)
-        gridView.colorTileView(.red, atX: gridView.columns-1, y: gridView.rows-1)
+        let startNode = self.startNode
+        let goalNode = self.goalNode
+        
+        gridView.colorTileView(.green, atX: startNode.x, y: startNode.y)
+        gridView.colorTileView(.red, atX: goalNode.x, y: goalNode.y)
     }
 }
