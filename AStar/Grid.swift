@@ -11,7 +11,7 @@ import Foundation
 struct Grid {
     let width: Int
     let height: Int
-    private let gridNodes: [Node]
+    let gridNodes: [Node]
     
     init(width: Int, height: Int) {
         self.width = width

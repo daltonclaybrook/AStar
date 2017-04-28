@@ -21,7 +21,7 @@ class GridViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureGrid()
+        resetGridView()
     }
     
     //MARK: Actions
@@ -41,12 +41,19 @@ class GridViewController: UIViewController {
         gridView.drawPath(withNodes: pathNodes)
     }
     
+    @IBAction func resetButtonPressed(_ sender: Any) {
+        grid.gridNodes.forEach { $0.isBlocked = false }
+        resetGridView()
+    }
+    
     //MARK: Private
     
-    private func configureGrid() {
+    private func resetGridView() {
+        gridView.clearPath()
         let startNode = self.startNode
         let goalNode = self.goalNode
         
+        gridView.colorAllTiles(.white)
         gridView.colorTileView(.green, atX: startNode.x, y: startNode.y)
         gridView.colorTileView(.red, atX: goalNode.x, y: goalNode.y)
     }

@@ -47,6 +47,14 @@ class GridView: UIView {
         }
     }
     
+    func colorAllTiles(_ color: UIColor) {
+        tileViews.forEach { $0.backgroundColor = color }
+    }
+    
+    func clearPath() {
+        pathLayer.path = nil
+    }
+    
     func drawPath(withNodes nodes: [Node]) {
         guard nodes.count >= 2 else { return }
         currentNodePath = nodes
