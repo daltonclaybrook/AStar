@@ -14,18 +14,21 @@ class GridViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let nodes = [
-            Node(x: 3, y: 4),
-            Node(x: 3, y: 5),
-            Node(x: 3, y: 6),
-            Node(x: 4, y: 5),
-            Node(x: 5, y: 4),
-            Node(x: 6, y: 5),
-            Node(x: 7, y: 5)
-        ]
-        gridView.drawPath(withNodes: nodes)
+        configureGrid()
+    }
+    
+    //MARK: Actions
+    
+    @IBAction func gridViewTapGestureRecognized(_ sender: UITapGestureRecognizer) {
+        let location = sender.location(in: gridView)
+        let nodeLocation = gridView.tileLocationOfTap(at: location)
+        gridView.colorTileView(.lightGray, atX: nodeLocation.x, y: nodeLocation.y)
     }
     
     //MARK: Private
+    
+    private func configureGrid() {
+        gridView.colorTileView(.green, atX: 0, y: 0)
+        gridView.colorTileView(.red, atX: gridView.columns-1, y: gridView.rows-1)
+    }
 }

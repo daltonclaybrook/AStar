@@ -40,6 +40,13 @@ class GridView: UIView {
         getTileView(atX: x, y: y).backgroundColor = color
     }
     
+    func colorTileView(_ color: UIColor, atLocation location: CGPoint) {
+        tileViews.forEach { view in
+            guard view.frame.contains(location) else { return }
+            view.backgroundColor = color
+        }
+    }
+    
     func drawPath(withNodes nodes: [Node]) {
         guard nodes.count >= 2 else { return }
         currentNodePath = nodes
@@ -50,6 +57,14 @@ class GridView: UIView {
         path.move(to: centerOfTile(atX: first.x, y: first.y))
         nodesCopy.forEach { path.addLine(to: self.centerOfTile(atX: $0.x, y: $0.y)) }
         pathLayer.path = path.cgPath
+    }
+    
+    func tileLocationOfTap(at point: CGPoint) -> (x: Int, y: Int) {
+        guard let index = tileViews.enumerated().filter({ offset, tileView in
+            return tileView.frame.contains(point)
+        }).first?.offset else { return (0,0) }
+        
+        return getLocationOfTile(atIndex: index)
     }
     
     //MARK: Private
@@ -102,6 +117,12 @@ class GridView: UIView {
     private func getTileView(atX x: Int, y: Int) -> UIView {
         let idx = y * columns + x
         return tileViews[idx]
+    }
+    
+    private func getLocationOfTile(atIndex index: Int) -> (x: Int, y: Int) {
+        let x = index % columns
+        let y = index / columns
+        return (x, y)
     }
     
     private func centerOfTile(atX x: Int, y: Int) -> CGPoint {
