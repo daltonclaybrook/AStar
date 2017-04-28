@@ -28,8 +28,8 @@ class GridViewController: UIViewController {
     
     @IBAction func gridViewTapGestureRecognized(_ sender: UITapGestureRecognizer) {
         let location = sender.location(in: gridView)
-        let nodeLocation = gridView.tileLocationOfTap(at: location)
-        guard let node = grid.node(atX: nodeLocation.x, y: nodeLocation.y) else { return }
+        guard let nodeLocation = gridView.tileLocationOfTap(at: location),
+            let node = grid.node(atX: nodeLocation.x, y: nodeLocation.y) else { return }
         
         node.isBlocked = !node.isBlocked
         let color: UIColor = node.isBlocked ? .lightGray : .white

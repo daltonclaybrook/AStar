@@ -67,10 +67,10 @@ class GridView: UIView {
         pathLayer.path = path.cgPath
     }
     
-    func tileLocationOfTap(at point: CGPoint) -> (x: Int, y: Int) {
+    func tileLocationOfTap(at point: CGPoint) -> (x: Int, y: Int)? {
         guard let index = tileViews.enumerated().filter({ offset, tileView in
             return tileView.frame.contains(point)
-        }).first?.offset else { return (0,0) }
+        }).first?.offset else { return nil }
         
         return getLocationOfTile(atIndex: index)
     }
