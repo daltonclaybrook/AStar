@@ -37,7 +37,10 @@ class GridViewController: UIViewController {
     }
     
     @IBAction func findPathButtonPressed(_ sender: Any) {
-        guard let pathNodes = Path.findPath(from: startNode, to: goalNode) else { return }
+        guard let pathNodes = Path.findPath(from: startNode, to: goalNode) else {
+            gridView.clearPath()
+            return
+        }
         gridView.drawPath(withNodes: pathNodes)
     }
     
