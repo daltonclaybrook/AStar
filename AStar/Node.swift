@@ -40,7 +40,7 @@ class NodeRef {
     
     var neighbors = WeakArray<NodeRef>()
     var unblockedNeighbors: WeakArray<NodeRef> {
-        return generateUnblockedNeighbors2()
+        return generateUnblockedNeighbors()
     }
     
     init(x: Int, y: Int) {
@@ -50,28 +50,6 @@ class NodeRef {
     //MARK: Private
     
     private func generateUnblockedNeighbors() -> WeakArray<NodeRef> {
-        let unblocked = neighbors.filter { !$0.isBlocked }
-        let blocked = neighbors.filter { $0.isBlocked }
-        
-        var outNodes = [NodeRef]()
-        for neighbor in unblocked {
-            var nodeIsUnblocked = true
-            if neighbor.node.x != node.x && neighbor.node.y != node.y {
-                // corner
-                nodeIsUnblocked = !blocked.contains {
-                    abs(neighbor.node.x - $0.node.x) <= 1 &&
-                        abs(neighbor.node.y - $0.node.y) <= 1
-                }
-            }
-            
-            if nodeIsUnblocked {
-                outNodes.append(neighbor)
-            }
-        }
-        return WeakArray(outNodes)
-    }
-    
-    private func generateUnblockedNeighbors2() -> WeakArray<NodeRef> {
         let (blocked, unblocked) = neighbors.filterSplit { $0.isBlocked }
         let blockedNodes = blocked.map { $0.node }
         let (unblockedCorners, unblockedSides) = unblocked.filterSplit { $0.node.x != node.x && $0.node.y != node.y }
@@ -79,13 +57,9 @@ class NodeRef {
         
         outNodes += unblockedCorners.flatMap { cornerRef -> NodeRef? in
             let corner = cornerRef.node
-            let adjacent = [
-                Node(x: corner.x+1, y: corner.y),
-                Node(x: corner.x, y: corner.y+1),
-                Node(x: corner.x-1, y: corner.y),
-                Node(x: corner.x, y: corner.y-1)
-            ]
-            return adjacent.reduce(true) { !blockedNodes.contains($1) && $0 } ? cornerRef : nil
+            return !blockedNodes.contains {
+                abs(corner.x - $0.x) <= 1 && abs(corner.y - $0.y) <= 1
+            } ? cornerRef : nil
         }
         
         return WeakArray(outNodes)
