@@ -20,7 +20,7 @@ class GridView: UIView {
     private var tileViews = [UIView]()
     private let pathLayerView = UIView()
     private let pathLayer = CAShapeLayer()
-    private var currentNodePath: [Node]?
+    private var currentNodePath: [NodeRef]?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,8 +36,8 @@ class GridView: UIView {
     
     //MARK: Public
     
-    func colorTileView(_ color: UIColor, atX x: Int, y: Int) {
-        getTileView(atX: x, y: y).backgroundColor = color
+    func colorTileView(_ color: UIColor, atNode node: Node) {
+        getTileView(atNode: node).backgroundColor = color
     }
     
     func colorTileView(_ color: UIColor, atLocation location: CGPoint) {
@@ -55,19 +55,19 @@ class GridView: UIView {
         pathLayer.path = nil
     }
     
-    func drawPath(withNodes nodes: [Node]) {
+    func drawPath(withNodes nodes: [NodeRef]) {
         guard nodes.count >= 2 else { return }
         currentNodePath = nodes
         
         var nodesCopy = nodes
         let first = nodesCopy.removeFirst()
         let path = UIBezierPath()
-        path.move(to: centerOfTile(atX: first.x, y: first.y))
-        nodesCopy.forEach { path.addLine(to: self.centerOfTile(atX: $0.x, y: $0.y)) }
+        path.move(to: centerOfTile(atNode: first.node))
+        nodesCopy.forEach { path.addLine(to: self.centerOfTile(atNode: $0.node)) }
         pathLayer.path = path.cgPath
     }
     
-    func tileLocationOfTap(at point: CGPoint) -> (x: Int, y: Int)? {
+    func tileLocationOfTap(at point: CGPoint) -> Node? {
         guard let index = tileViews.enumerated().filter({ offset, tileView in
             return tileView.frame.contains(point)
         }).first?.offset else { return nil }
@@ -112,7 +112,7 @@ class GridView: UIView {
             for x in (0..<columns) {
                 let xOffset = CGFloat(x) * (tileWidth + tileSpacing) + tileSpacing
                 let yOffset = CGFloat(y) * (tileHeight + tileSpacing) + tileSpacing
-                let tileView = getTileView(atX: x, y: y)
+                let tileView = getTileView(atNode: Node(x: x, y: y))
                 tileView.frame = CGRect(x: xOffset, y: yOffset, width: tileWidth, height: tileHeight)
             }
         }
@@ -122,18 +122,18 @@ class GridView: UIView {
         }
     }
     
-    private func getTileView(atX x: Int, y: Int) -> UIView {
-        let idx = y * columns + x
+    private func getTileView(atNode node: Node) -> UIView {
+        let idx = node.y * columns + node.x
         return tileViews[idx]
     }
     
-    private func getLocationOfTile(atIndex index: Int) -> (x: Int, y: Int) {
+    private func getLocationOfTile(atIndex index: Int) -> Node {
         let x = index % columns
         let y = index / columns
-        return (x, y)
+        return Node(x: x, y: y)
     }
     
-    private func centerOfTile(atX x: Int, y: Int) -> CGPoint {
-        return getTileView(atX: x, y: y).center
+    private func centerOfTile(atNode node: Node) -> CGPoint {
+        return getTileView(atNode: node).center
     }
 }

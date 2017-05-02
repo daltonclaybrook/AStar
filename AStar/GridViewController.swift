@@ -12,11 +12,12 @@ class GridViewController: UIViewController {
     
     @IBOutlet var gridView: GridView!
     let grid = Grid(width: 10, height: 10)
-    var startNode: Node {
-        return grid.node(atX: 0, y: 0)!
+    var startNode: NodeRef {
+        return grid.nodeRef(atNode: .zero)!
     }
-    var goalNode: Node {
-        return grid.node(atX: grid.width-1, y: grid.height-1)!
+    var goalNode: NodeRef {
+        let node = Node(x: grid.width-1, y: grid.height-1)
+        return grid.nodeRef(atNode: node)!
     }
     
     override func viewDidLoad() {
@@ -28,12 +29,12 @@ class GridViewController: UIViewController {
     
     @IBAction func gridViewTapGestureRecognized(_ sender: UITapGestureRecognizer) {
         let location = sender.location(in: gridView)
-        guard let nodeLocation = gridView.tileLocationOfTap(at: location),
-            let node = grid.node(atX: nodeLocation.x, y: nodeLocation.y) else { return }
+        guard let node = gridView.tileLocationOfTap(at: location),
+            let nodeRef = grid.nodeRef(atNode: node) else { return }
         
-        node.isBlocked = !node.isBlocked
-        let color: UIColor = node.isBlocked ? .lightGray : .white
-        gridView.colorTileView(color, atX: node.x, y: node.y)
+        nodeRef.isBlocked = !nodeRef.isBlocked
+        let color: UIColor = nodeRef.isBlocked ? .lightGray : .white
+        gridView.colorTileView(color, atNode: nodeRef.node)
     }
     
     @IBAction func findPathButtonPressed(_ sender: Any) {
@@ -57,7 +58,7 @@ class GridViewController: UIViewController {
         let goalNode = self.goalNode
         
         gridView.colorAllTiles(.white)
-        gridView.colorTileView(.green, atX: startNode.x, y: startNode.y)
-        gridView.colorTileView(.red, atX: goalNode.x, y: goalNode.y)
+        gridView.colorTileView(.green, atNode: startNode.node)
+        gridView.colorTileView(.red, atNode: goalNode.node)
     }
 }

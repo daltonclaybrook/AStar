@@ -9,12 +9,12 @@
 import Foundation
 
 struct Path {
-    static func findPath(from start: Node, to goal: Node) -> [Node]? {
-        var closedSet = [Node]()
+    static func findPath(from start: NodeRef, to goal: NodeRef) -> [NodeRef]? {
+        var closedSet = [NodeRef]()
         var openSet = [start]
-        var cameFrom = [Node: Node]()
+        var cameFrom = [NodeRef: NodeRef]()
         var gScore = [ start: 0.0 ]
-        var fScore = [ start: heuristicCostEstimate(from: start, to: goal)]
+        var fScore = [ start: heuristicCostEstimate(from: start.node, to: goal.node)]
         
         while !openSet.isEmpty {
             let current = openSet.enumerated().sorted { node1, node2 in fScore[node1.element]! < fScore[node2.element]! }.first!
@@ -29,7 +29,7 @@ struct Path {
                     continue
                 }
                 
-                let tentativeGScore = gScore[current.element]! + current.element.distanceTo(node: neighbor)
+                let tentativeGScore = gScore[current.element]! + current.element.node.distanceTo(node: neighbor.node)
                 if !openSet.contains(neighbor) {
                     openSet.append(neighbor)
                 }
@@ -40,7 +40,7 @@ struct Path {
                 
                 cameFrom[neighbor] = current.element
                 gScore[neighbor] = tentativeGScore
-                fScore[neighbor] = tentativeGScore + heuristicCostEstimate(from: neighbor, to: goal)
+                fScore[neighbor] = tentativeGScore + heuristicCostEstimate(from: neighbor.node, to: goal.node)
             }
         }
         
@@ -59,7 +59,7 @@ struct Path {
         return sqrt(2) * minDiagonal + straight
     }
     
-    private static func reconstructPath(cameFrom: [Node: Node], node: Node) -> [Node] {
+    private static func reconstructPath(cameFrom: [NodeRef: NodeRef], node: NodeRef) -> [NodeRef] {
         var path = [node]
         var current = node
         while cameFrom[current] != nil {

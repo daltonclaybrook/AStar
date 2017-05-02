@@ -11,7 +11,7 @@ import Foundation
 struct Grid {
     let width: Int
     let height: Int
-    let gridNodes: [Node]
+    let gridNodes: [NodeRef]
     
     init(width: Int, height: Int) {
         self.width = width
@@ -21,17 +21,17 @@ struct Grid {
     
     //MARK: Public
     
-    func node(atX x: Int, y: Int) -> Node? {
-        return gridNodes.at(x: x, y: y, width: width)
+    func nodeRef(atNode node: Node) -> NodeRef? {
+        return gridNodes.at(x: node.x, y: node.y, width: width)
     }
     
     //MARK: Private
     
-    private static func createGridNodes(forWidth width: Int, height: Int) -> [Node] {
-        var nodes = [Node]()
+    private static func createGridNodes(forWidth width: Int, height: Int) -> [NodeRef] {
+        var nodes = [NodeRef]()
         for y in (0..<height) {
             for x in (0..<width) {
-                nodes.append(Node(x: x, y: y))
+                nodes.append(NodeRef(x: x, y: y))
             }
         }
         for idx in (0..<nodes.count) {
@@ -41,16 +41,16 @@ struct Grid {
         return nodes
     }
     
-    private static func neighbors(forNode node: Node, inNodes allNodes: [Node], width: Int, height: Int) -> WeakArray<Node> {
+    private static func neighbors(forNode nodeRef: NodeRef, inNodes allNodes: [NodeRef], width: Int, height: Int) -> WeakArray<NodeRef> {
         let neighborPrototypes = [
-            node.offsetBy(x: 1, y: 0),
-            node.offsetBy(x: 1, y: 1),
-            node.offsetBy(x: 0, y: 1),
-            node.offsetBy(x: -1, y: 1),
-            node.offsetBy(x: -1, y: 0),
-            node.offsetBy(x: -1, y: -1),
-            node.offsetBy(x: 0, y: -1),
-            node.offsetBy(x: 1, y: -1)
+            nodeRef.node.offsetBy(x: 1, y: 0),
+            nodeRef.node.offsetBy(x: 1, y: 1),
+            nodeRef.node.offsetBy(x: 0, y: 1),
+            nodeRef.node.offsetBy(x: -1, y: 1),
+            nodeRef.node.offsetBy(x: -1, y: 0),
+            nodeRef.node.offsetBy(x: -1, y: -1),
+            nodeRef.node.offsetBy(x: 0, y: -1),
+            nodeRef.node.offsetBy(x: 1, y: -1)
             ]
             .filter { $0.x >= 0 && $0.x < width && $0.y >= 0 && $0.y < height }
         
@@ -61,8 +61,8 @@ struct Grid {
     }
 }
 
-extension Array where Element == Node {
-    func at(x: Int, y: Int, width: Int) -> Node? {
+extension Array where Element == NodeRef {
+    func at(x: Int, y: Int, width: Int) -> NodeRef? {
         let idx = y * width + x
         guard idx >= 0 && idx < count else { return nil }
         return self[idx]
