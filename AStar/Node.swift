@@ -40,7 +40,7 @@ class NodeRef {
     
     var neighbors = WeakArray<NodeRef>()
     var unblockedNeighbors: WeakArray<NodeRef> {
-        return generateUnblockedNeighbors()
+        return generateUnblockedNeighbors2()
     }
     
     init(x: Int, y: Int) {
@@ -70,6 +70,26 @@ class NodeRef {
         }
         return WeakArray(outNodes)
     }
+    
+    private func generateUnblockedNeighbors2() -> WeakArray<NodeRef> {
+        let (blocked, unblocked) = neighbors.filterSplit { $0.isBlocked }
+        let blockedNodes = blocked.map { $0.node }
+        let (unblockedCorners, unblockedSides) = unblocked.filterSplit { $0.node.x != node.x && $0.node.y != node.y }
+        var outNodes = unblockedSides
+        
+        outNodes += unblockedCorners.flatMap { cornerRef -> NodeRef? in
+            let corner = cornerRef.node
+            let adjacent = [
+                Node(x: corner.x+1, y: corner.y),
+                Node(x: corner.x, y: corner.y+1),
+                Node(x: corner.x-1, y: corner.y),
+                Node(x: corner.x, y: corner.y-1)
+            ]
+            return adjacent.reduce(true) { !blockedNodes.contains($1) && $0 } ? cornerRef : nil
+        }
+        
+        return WeakArray(outNodes)
+    }
 }
 
 extension NodeRef: Hashable {
@@ -84,5 +104,20 @@ extension NodeRef: Hashable {
 extension NodeRef: CustomStringConvertible {
     var description: String {
         return "x: \(node.x), y: \(node.y)"
+    }
+}
+
+extension Collection {
+    func filterSplit(predicate: (Iterator.Element) -> Bool) -> (pass: [Iterator.Element], fail: [Iterator.Element]) {
+        var pass = Array<Iterator.Element>()
+        var fail = Array<Iterator.Element>()
+        for element in self {
+            if predicate(element) {
+                pass.append(element)
+            } else {
+                fail.append(element)
+            }
+        }
+        return (pass, fail)
     }
 }
